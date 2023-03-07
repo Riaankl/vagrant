@@ -1,0 +1,34 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/focal64"
+
+  config.vm.provider :virtualbox do |vb|
+    vb.name = "scratch"
+    vb.memory = 2048
+    vb.cpus = 2
+    vb.gui = true
+    vb.customize ["modifyvm", :id, "--vram", "128"]
+    vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
+
+  end
+
+  # Update repositories
+  config.vm.provision :shell, inline: "sudo apt update -y"
+
+  # Upgrade installed packages
+  config.vm.provision :shell, inline: "sudo apt upgrade -y"
+
+  # Add desktop environment
+  config.vm.provision :shell, inline: "sudo apt install -y --no-install-recommends ubuntu-desktop"
+  config.vm.provision :shell, inline: "sudo apt install -y --no-install-recommends virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11"
+  # Add `vagrant` to Administrator
+  config.vm.provision :shell, inline: "sudo usermod -a -G sudo vagrant"
+  
+  #add scratch
+  config.vm.provision "shell", inline: "sudo apt-get install -y scratch"
+
+  # Restart
+  config.vm.provision :shell, inline: "sudo shutdown -r now"
+end
+
+# Created by heyst Mar 7, 2023, 10:57 PM
+
